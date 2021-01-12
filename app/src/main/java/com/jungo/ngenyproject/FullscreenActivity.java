@@ -31,7 +31,7 @@ public class FullscreenActivity extends AppCompatActivity {
         @Override
            public void run() {
             FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-            f.replace(R.id.main_container, new LoginFragment());
+            f.replace(R.id.main_container, new HomeFragment());
             f.commit();
            }
         }, 3000);

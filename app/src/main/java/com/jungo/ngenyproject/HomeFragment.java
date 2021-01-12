@@ -1,45 +1,57 @@
 package com.jungo.ngenyproject;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
 
-import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class HomeFragment extends Fragment {
+    private final Activity activity = getActivity();
+    private Boolean sessionUser  = false;
 
+    LayoutInflater inflater;
+
+    String title[] = {"aijj", "blo", "cju", "aijj", "blo", "cju", "aijj", "blo", "cju"};
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        Button btnGo  = (Button) view.findViewById(R.id.btn_go_to_second_fragment);
-//        btnGo.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                assert getFragmentManager() != null;
-//                FragmentTransaction fr = getFragmentManager().beginTransaction();
-//                fr.replace(R.id.frame_container, new SecondFragment());
-//                fr.commit();
-//            }
-//        });
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_loginFragment);
-//            }
-//        }, 3000);
-        redirect("login");
+        this.inflater = inflater;
+        ListView listOfSchool = (ListView) view.findViewById(R.id.list_view_school);
+
+        MyAdapter custumAdapter = new MyAdapter(this.getContext(),title, title);
+        listOfSchool.setAdapter(custumAdapter);
+        listOfSchool.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("ITEM CLICK", position +" position");
+            }
+        });
+
+//
+
         return view;
     }
 
+
     public void redirect(String to){
+        assert getFragmentManager() != null;
         FragmentTransaction fr = getFragmentManager().beginTransaction();
         int main_container = R.id.main_container;
         switch (to){
@@ -56,5 +68,44 @@ public class HomeFragment extends Fragment {
                 break;
         }
 
+    }
+
+    private void checkDataOfUser(){
+        String email = getArguments().getString("email");
+        String password = getArguments().getString("password");
+        String name = getArguments().getString("name");
+
+        if (email != null && password !=null && name !=null ){
+            if(activity != null){
+                sessionUser = true;
+                Toast.makeText(activity, "bonjour :"+name+" email: "+ email, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private class MyAdapter extends ArrayAdapter<String>{
+        Context context ;
+        String title[];
+        String subTitle[];
+        MyAdapter(Context c, String title[], String subTitle[]){
+            super(c, R.layout.fragment_items_view, R.id.title_text, title);
+            this.context = c;
+            this.title = title;
+            this.subTitle = subTitle;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//            LayoutInflater layoutInflater = (LayoutInflater)
+//                    getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflater.inflate(R.layout.fragment_home_list_view, parent, false);
+            TextView _title = v.findViewById(R.id.my_title);
+            TextView _subTitle = v.findViewById(R.id.my_sub_title);
+            _title.setText(title[position]);
+            _subTitle.setText(subTitle[position]);
+            return v;
+
+        }
     }
 }

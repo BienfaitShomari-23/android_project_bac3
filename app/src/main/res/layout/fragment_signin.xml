@@ -6,13 +6,13 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".LoginFragment">
+    tools:context=".SigninFragment">
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login_text"
+        android:text="Signin"
         android:textAlignment="center"
         android:textSize="36sp" />
     <com.google.android.material.textfield.TextInputLayout
@@ -21,7 +21,20 @@
         android:layout_marginVertical="10dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email_login"
+            android:id="@+id/name_signin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="@string/nom"
+            tools:ignore="InvalidId" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -35,7 +48,7 @@
         android:layout_marginVertical="10dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password_login"
+            android:id="@+id/password_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -44,8 +57,8 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/btn_signin"
         android:layout_marginTop="20dp"
-        android:id="@+id/btn_login"
         android:background="@drawable/btn_rounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,15 +70,15 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="match_parent"
-            android:text="@string/pas_encore_de_compte"
+            android:text="@string/je_deja_un_compte"
             android:layout_height="wrap_content"/>
         <TextView
-            android:id="@+id/create_count_text"
+            android:id="@+id/go_to_login_text"
             android:layout_marginStart="10dp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/creer_un_compte"
+            android:text="@string/se_connecter"
             />
     </LinearLayout>
 </LinearLayout>

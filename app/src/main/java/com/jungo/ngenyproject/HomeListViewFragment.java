@@ -1,6 +1,7 @@
 package com.jungo.ngenyproject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -75,8 +76,8 @@ public class HomeListViewFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_list_view, container, false);
 
-        SchoolListView adapter = new SchoolListView((Activity) view.getContext(), maintitle, subtitle,imgid);
-        list = (ListView) view.findViewById(R.id.list_of_school);
+        SchoolListView adapter = new SchoolListView((Context) view.getContext(), inflater, maintitle, subtitle,imgid);
+        list = (ListView) view.findViewById(R.id.list_view_school);
         list.setAdapter(adapter);
 
 
