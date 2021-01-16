@@ -38,7 +38,8 @@ public class SigninFragment extends Fragment {
         link_to_login_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                linkToSignin(view);
+
+                Navigation.findNavController(view).navigate(R.id.action_signinFragment_to_loginFragment);
             }
         });
 //
@@ -60,19 +61,19 @@ public class SigninFragment extends Fragment {
     }
 //
     private void redirect(Bundle data){
-        assert getFragmentManager() != null;
-        FragmentTransaction fr = getFragmentManager().beginTransaction();
-        HomeFragment hfr = new HomeFragment();
-        hfr.setArguments(data);
-        fr.replace(R.id.main_container, hfr);
-        fr.commit();
+//        assert getFragmentManager() != null;
+//        FragmentTransaction fr = getFragmentManager().beginTransaction();
+//        HomeFragment hfr = new HomeFragment();
+//        hfr.setArguments(data);
+//        fr.replace(R.id.main_container, hfr);
+//        fr.commit();
     }
 
     private  void linkToSignin (View view){
-        FragmentTransaction fr = getFragmentManager().beginTransaction();
-        LoginFragment hfr = new LoginFragment();
-        fr.replace(R.id.main_container, hfr);
-        fr.commit();
+//        FragmentTransaction fr = getFragmentManager().beginTransaction();
+//        LoginFragment hfr = new LoginFragment();
+//        fr.replace(R.id.main_container, hfr);
+//        fr.commit();
 
     }
 

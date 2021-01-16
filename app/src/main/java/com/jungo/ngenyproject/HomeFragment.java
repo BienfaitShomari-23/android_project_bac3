@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 
 public class HomeFragment extends Fragment {
@@ -33,6 +37,10 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         this.inflater = inflater;
+        AppCompatActivity app = (AppCompatActivity) getActivity();
+        assert app != null;
+        Objects.requireNonNull(app.getSupportActionBar()).setTitle("Home");
+
         ListView listOfSchool = (ListView) view.findViewById(R.id.list_view_school);
 
         MyAdapter custumAdapter = new MyAdapter(this.getContext(),title, title);
@@ -41,6 +49,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("ITEM CLICK", position +" position");
+                Bundle dataItem = new Bundle();
+                dataItem.putLong("id",id);
+                dataItem.putInt("position", position);
+                Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_studentActivityFragment, dataItem);
             }
         });
 
@@ -51,22 +63,22 @@ public class HomeFragment extends Fragment {
 
 
     public void redirect(String to){
-        assert getFragmentManager() != null;
-        FragmentTransaction fr = getFragmentManager().beginTransaction();
-        int main_container = R.id.main_container;
-        switch (to){
-            case "login":
-                fr.replace(main_container, new LoginFragment());
-                fr.commit();
-                break;
-            case "welcome":
-                fr.replace(main_container,
-                        new WelcomeFragment());
-                fr.commit();
-                break;
-            default:
-                break;
-        }
+//        assert getFragmentManager() != null;
+//        FragmentTransaction fr = getFragmentManager().beginTransaction();
+//        int main_container = R.id.main_container;
+//        switch (to){
+//            case "login":
+//                fr.replace(main_container, new LoginFragment());
+//                fr.commit();
+//                break;
+//            case "welcome":
+//                fr.replace(main_container,
+//                        new WelcomeFragment());
+//                fr.commit();
+//                break;
+//            default:
+//                break;
+//        }
 
     }
 

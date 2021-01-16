@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/my_navigation"
     app:startDestination="@id/homeFragment">
 
     <fragment
@@ -16,6 +16,12 @@
         <action
             android:id="@+id/action_homeFragment_to_signinFragment"
             app:destination="@id/signinFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_studentActivityFragment"
+            app:destination="@id/studentActivityFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mapActivityFragment"
+            app:destination="@id/mapActivityFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -41,4 +47,30 @@
             android:id="@+id/action_signinFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/studentActivityFragment"
+        android:name="com.jungo.ngenyproject.StudentActivityFragment"
+        android:label="fragment_student_activity"
+        tools:layout="@layout/fragment_student_activity" >
+        <action
+            android:id="@+id/action_studentActivityFragment_to_studentTabActivityFragment"
+            app:destination="@id/studentTabActivityFragment" />
+        <action
+            android:id="@+id/action_studentActivityFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/studentTabActivityFragment"
+        android:name="com.jungo.ngenyproject.StudentTabActivityFragment"
+        android:label="fragment_student_tab_activity"
+        tools:layout="@layout/fragment_student_tab_activity" >
+        <action
+            android:id="@+id/action_studentTabActivityFragment_to_studentActivityFragment"
+            app:destination="@id/studentActivityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapActivityFragment"
+        android:name="com.jungo.ngenyproject.MapActivityFragment"
+        android:label="fragment_map_activity"
+        tools:layout="@layout/fragment_map_activity" />
 </navigation>
