@@ -2,10 +2,20 @@
 
     <style name="Widget.Theme.NgenyProject.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="Widget.Theme.NgenyProject.ButtonBar.Fullscreen" parent="">
-        <item name="android:background">@color/black_overlay</item>
+        <item name="android:background">#66E60000</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="CustomTheme" parent="Theme.AppCompat.Light">
+
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
     </style>
 </resources>

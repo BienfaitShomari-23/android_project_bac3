@@ -2,6 +2,7 @@ package com.jungo.ngenyproject.appdata;
 
 import androidx.annotation.NonNull;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -9,14 +10,30 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Schools {
     @DatabaseField(generatedId = true)
     private int idShools;
-    @DatabaseField
+    @DatabaseField(dataType = DataType.STRING)
     private String code;
-    @DatabaseField
+    @DatabaseField(dataType = DataType.STRING)
     private String name;
+    @DatabaseField
+    private boolean active;
+    public Schools(){
 
-    Schools(String code, String name){
+    }
+    public Schools(String code, String name, boolean active){
         this.code = code;
         this.name= name;
+        this.active = active;
+    }
+    public boolean isActive() {
+        return active;
+    }
+
+    public int getIdShools() {
+        return idShools;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     @NonNull
     @Override

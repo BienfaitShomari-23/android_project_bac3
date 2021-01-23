@@ -1,12 +1,9 @@
 package com.jungo.ngenyproject;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -53,7 +50,7 @@ public class ButtonAddingSchoolFragment extends Fragment {
 //                                        result.setText(userInput.getText());
                                         Bundle b = new Bundle();
                                         b.putString("args","bonjour");
-                                        Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_loginFragment,b);
+                                        Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_loginFragments,b);
                                     }
                                 })
                         .setNegativeButton("Cancel",

@@ -3,6 +3,7 @@ package com.jungo.ngenyproject;
 import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
@@ -15,6 +16,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jungo.ngenyproject.appdata.DataBaseManager;
+import com.jungo.ngenyproject.appdata.DatabaseHelper;
+import com.jungo.ngenyproject.appdata.SessionApp;
+import com.jungo.ngenyproject.appdata.Users;
+
+import java.util.Date;
+import java.util.Objects;
+
 
 public class SigninFragment extends Fragment {
 
@@ -22,15 +31,21 @@ public class SigninFragment extends Fragment {
     EditText name;
     EditText password;
     Activity activity;
+    DatabaseHelper databaseHelper;
+    View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_signin, container, false);
+        view = inflater.inflate(R.layout.fragment_signin, container, false);
         activity = getActivity();
 
-//        activity.getActionBar().hide();
-        activity.setTitle(R.string.signin);
+//        hiding the appbar
+        AppCompatActivity app = (AppCompatActivity) getActivity();
+        assert app != null;
+        Objects.requireNonNull(app.getSupportActionBar()).hide();
+
+        databaseHelper = new DatabaseHelper(getContext());
         initFragment(view);
 
         TextView link_to_login_text = (TextView) view.findViewById(R.id.go_to_login_text);
@@ -38,7 +53,6 @@ public class SigninFragment extends Fragment {
         link_to_login_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Navigation.findNavController(view).navigate(R.id.action_signinFragment_to_loginFragment);
             }
         });
@@ -48,33 +62,56 @@ public class SigninFragment extends Fragment {
     }
 
     private void signin(){
+        Bundle bundle = new Bundle();//
+        String emailText = email.getText().toString();
+        String passwordText = password.getText().toString();
+        String nameText = name.getText().toString();
+
+        if (
+                (emailText !=null && passwordText != null && emailText !=null) &&
+                (!nameText.equals("") && !passwordText.equals("") && !emailText.equals(""))
+        ){
+
+            try {
+//                inser into database or create a new users
+                databaseHelper.addUser(
+                        new Users(nameText,emailText,passwordText,true, new Date())
+                );
+
+                bundle.putString("email", emailText);
+                bundle.putString("password", passwordText);
+                bundle.putString("name", nameText);
+                SessionApp sessionApp = databaseHelper.getWhereSessionApp().where()
+                        .queryForFirst();
+
+                Users users = databaseHelper.getWhereUser().where()
+                        .eq("email",emailText).queryForFirst();
+                if (sessionApp != null){
+                    sessionApp.setEmail(emailText);
+                    sessionApp.setIdUser(""+ users.getIdUser());
+                    databaseHelper.updateSessionApp(sessionApp);
+
+                }else{
+                    databaseHelper.addSessionApp(
+                            new SessionApp(""+ users.getIdUser(),users.getEmail())
+                    );
+                }
+                this.message("Bienvenu"+ nameText);
+                Navigation.findNavController(this.view).navigate(R.id.action_signinFragment_to_homeFragment, bundle);
+            }catch (Exception e){
+                this.message("On n'a pu creer un creer un compte, Veiller ressayer!");
+            }
+        }else{
+            this.message("Veillez remplire les informations");
+        }
+
+    }
+
+    private void message(String message){
         Activity activity = getActivity();
         if(activity != null){
-            Toast.makeText(activity, "Say&ing Hi in Progress...", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
         }
-        Bundle bundle = new Bundle();
-//
-        bundle.putString("email", email.getText().toString());
-        bundle.putString("password", password.getText().toString());
-        bundle.putString("password", password.getText().toString());
-        redirect(bundle);
-    }
-//
-    private void redirect(Bundle data){
-//        assert getFragmentManager() != null;
-//        FragmentTransaction fr = getFragmentManager().beginTransaction();
-//        HomeFragment hfr = new HomeFragment();
-//        hfr.setArguments(data);
-//        fr.replace(R.id.main_container, hfr);
-//        fr.commit();
-    }
-
-    private  void linkToSignin (View view){
-//        FragmentTransaction fr = getFragmentManager().beginTransaction();
-//        LoginFragment hfr = new LoginFragment();
-//        fr.replace(R.id.main_container, hfr);
-//        fr.commit();
-
     }
 
     private void initFragment(View view){

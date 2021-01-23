@@ -16,8 +16,12 @@
         android:id="@+id/input_text_dialogue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
         <requestFocus />
+    </EditText>
+    <EditText
+        android:id="@+id/input_text_dialogue_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
     </EditText>
     <TextView
         android:layout_width="wrap_content"

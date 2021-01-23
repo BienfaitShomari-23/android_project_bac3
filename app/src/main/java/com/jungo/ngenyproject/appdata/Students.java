@@ -7,16 +7,37 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "T_Students")
 public class Students {
+
+
     @DatabaseField(generatedId = true)
     private int idStudents;
     @DatabaseField
     private String code;
     @DatabaseField
     private String name;
+    @DatabaseField
+    private boolean active;
 
-    Students(String code, String name){
+    public Students(){
+
+    }
+    public Students(String code, String name, boolean active){
         this.code = code;
         this.name= name;
+        this.active = active;
+    }
+    public boolean isActive() {
+        return active;
+    }
+    public int getIdStudents() {
+        return idStudents;
+    }
+
+    public void setIdStudents(int idStudents) {
+        this.idStudents = idStudents;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
     @NonNull
     @Override
@@ -39,4 +60,5 @@ public class Students {
     public void setCode(String code) {
         this.code = code;
     }
+
 }

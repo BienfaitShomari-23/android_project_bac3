@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.NgenyProject" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">#013ACA</item>
+        <item name="colorPrimaryVariant">#010893</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="Theme.NgenyProject.Fullscreen" parent="Theme.NgenyProject">

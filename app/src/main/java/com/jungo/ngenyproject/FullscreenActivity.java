@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.jungo.ngenyproject.appdata.DatabaseHelper;
+
 public class FullscreenActivity extends AppCompatActivity {
     //    my variable or attribute
     NavController navController;
@@ -30,6 +32,7 @@ public class FullscreenActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.fragment_nav_host);
         NavigationUI.setupActionBarWithNavController(this,navController);
 
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
 //        fragmentTransaction.add(R.id.main_container, new SplashFragment());
 //        fragmentTransaction.commit();
 

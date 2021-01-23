@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -11,7 +11,7 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_loginFragment"
+            android:id="@+id/action_homeFragment_to_loginFragments"
             app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_homeFragment_to_signinFragment"
@@ -19,9 +19,6 @@
         <action
             android:id="@+id/action_homeFragment_to_studentActivityFragment"
             app:destination="@id/studentActivityFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_mapActivityFragment"
-            app:destination="@id/mapActivityFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -68,9 +65,4 @@
             android:id="@+id/action_studentTabActivityFragment_to_studentActivityFragment"
             app:destination="@id/studentActivityFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/mapActivityFragment"
-        android:name="com.jungo.ngenyproject.MapActivityFragment"
-        android:label="fragment_map_activity"
-        tools:layout="@layout/fragment_map_activity" />
 </navigation>

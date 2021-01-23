@@ -17,8 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jungo.ngenyproject.appdata.DataBaseManager;
+import com.jungo.ngenyproject.appdata.DatabaseHelper;
+import com.jungo.ngenyproject.appdata.SessionApp;
 import com.jungo.ngenyproject.appdata.Users;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class LoginFragment extends Fragment {
@@ -26,13 +29,12 @@ public class LoginFragment extends Fragment {
     EditText email;
     EditText password;
     Activity activity;
-
+    DatabaseHelper databaseHelper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             String mParam1 = getArguments().getString("args");
-            MessageToast(mParam1);
         }
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,8 +43,9 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         AppCompatActivity app = (AppCompatActivity) getActivity();
         assert app != null;
-        Objects.requireNonNull(app.getSupportActionBar()).setElevation(0);
-        activity = getActivity();
+        Objects.requireNonNull(app.getSupportActionBar()).hide();
+
+        databaseHelper = new DatabaseHelper(getContext());
 
         Button btnCreateCount = (Button) view.findViewById(R.id.btn_login);
         TextView LinkToSignin = (TextView) view.findViewById(R.id.create_count_text);
@@ -53,7 +56,7 @@ public class LoginFragment extends Fragment {
         btnCreateCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                login(view);
             }
         });
 
@@ -68,51 +71,59 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    private void login(){
-        Activity activity = getActivity();
-        if(activity != null){
-            Toast.makeText(activity, "Say&ing Hi in Progress...", Toast.LENGTH_LONG).show();
+    private void login(View v){
+        Bundle bundle = new Bundle();//
+        String emailText = email.getText().toString();
+        String passwordText = password.getText().toString();
+
+        if (
+                (passwordText != null && emailText !=null) &&
+                        (!passwordText.equals("") && !emailText.equals(""))
+        ){
+
+            try {
+//                get the fist user
+                Users users = databaseHelper.getWhereUser().where()
+                        .eq("email",emailText).and()
+                        .eq("active",true).queryForFirst();
+
+                if (users !=null){
+                    if (users.getPassword().equals(passwordText)){
+                        bundle.putString("email", users.getEmail());
+                        bundle.putString("password", users.getPassword());
+                        bundle.putString("name", users.getName());
+                        SessionApp sessionApp = databaseHelper.getWhereSessionApp().where()
+                                .queryForFirst();
+                        if (sessionApp != null){
+                            sessionApp.setEmail(emailText);
+                            sessionApp.setIdUser(""+ users.getIdUser());
+                            databaseHelper.updateSessionApp(sessionApp);
+
+                        }else{
+                            databaseHelper.addSessionApp(
+                                    new SessionApp(""+ users.getIdUser(),users.getEmail())
+                            );
+                        }
+                        this.message("Bienvenu "+ users.getName().toUpperCase());
+                        Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_homeFragment, bundle);
+                    }else{
+                        this.message("Mot de passe incorect...");
+                    }
+                }else{
+                    this.message("Ce compte n'existe pas");
+                }
+
+            }catch (Exception e){
+                this.message("Ce compte n'existe pas");
+            }
+        }else{
+            this.message("Veillez remplire les informations");
         }
-        Bundle bundle = new Bundle();
-        String email_text = email.getText().toString();
-        String pwd = password.getText().toString();
-
-//        if (email_text!="" && pwd !=""){
-//            Users userLoged = users.getUser(email_text);
-//            if(userLoged.getPassword().equals(pwd) ){
-//                bundle.putString("email", email.getText().toString());
-//                redirect(bundle);
-//            }else {
-//                this.MessageToast("cet utilisateur n'existe pas ou mot de passe incorrect");
-//            }
-//
-//        }else{
-//            this.MessageToast("Veiller insere les le mot de passe ou votre email!");
-//        }
-
-//
 
     }
 
-    private void redirect(Bundle data){
-//        assert getFragmentManager() != null;
-//        FragmentTransaction fr = getFragmentManager().beginTransaction();
-//        HomeFragment hfr = new HomeFragment();
-//        hfr.setArguments(data);
-//        fr.replace(R.id.main_container, hfr);
-//        fr.commit();
-    }
 
-
-    public void goToSignin() {
-//        assert getFragmentManager() != null;
-//        FragmentTransaction fr = getFragmentManager().beginTransaction();
-//        SigninFragment signin = new SigninFragment();
-//        fr.replace(R.id.main_container, signin);
-//        fr.commit();
-    }
-
-    public void MessageToast(String message){
+    public void message(String message){
         Activity activity = getActivity();
         if(activity != null){
             Toast.makeText(activity, message, Toast.LENGTH_LONG).show();

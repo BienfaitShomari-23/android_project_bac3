@@ -1,6 +1,8 @@
 package com.jungo.ngenyproject;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,9 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jungo.ngenyproject.appdata.DatabaseHelper;
+import com.jungo.ngenyproject.appdata.Schools;
+import com.jungo.ngenyproject.appdata.Students;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -26,48 +35,58 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class StudentActivityFragment extends Fragment {
-
-    String title[] = {"aijj", "blo", "cju", "aijj", "blo", "cju", "aijj", "blo", "cju"};
+    DatabaseHelper databaseHelper;
+    ArrayList<Students> studentsArrayList;
+    StudentActivityFragment.MyAdapter custumAdapter;
+    ListView listOfSchool;
     LayoutInflater inflater ;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "id";
-    private static final String ARG_PARAM2 = "position";
 
-    // TODO: Rename and change types of parameters
-    private long mParam1;
+    private static final String ARG_id = "id";
+    private static final String ARG_PARAM2 = "position";
+    private long id;
     private int mParam2;
+    Schools schools;
 
     public StudentActivityFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StudentActivityFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static StudentActivityFragment newInstance(String param1, String param2) {
         StudentActivityFragment fragment = new StudentActivityFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_id, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        AppCompatActivity app = (AppCompatActivity) getActivity();
+        assert app != null;
+        Objects.requireNonNull(app.getSupportActionBar()).setTitle("Student");
+        Objects.requireNonNull(app.getSupportActionBar()).setElevation(0);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getLong(ARG_PARAM1);
+            id = getArguments().getLong(ARG_id);
             mParam2 = getArguments().getInt(ARG_PARAM2);
         }
 
+
+        AppCompatActivity app = (AppCompatActivity) getActivity();
+        assert app != null;
+        databaseHelper = new DatabaseHelper(getActivity());
+        try {
+            schools = databaseHelper.getWhereSchools().where().eq("idShools",id).queryForFirst();
+            Objects.requireNonNull(app.getSupportActionBar()).setTitle(schools.getName().toUpperCase());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -77,36 +96,123 @@ public class StudentActivityFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_student_activity, container, false);
         this.inflater = inflater;
-        TextView text = v.findViewById(R.id.detail);
-        AppCompatActivity app = (AppCompatActivity) getActivity();
-        assert app != null;
-        Objects.requireNonNull(app.getSupportActionBar()).setTitle("Student");
-        ListView listOfSchool = (ListView) v.findViewById(R.id.list_view_student);
+        listOfSchool = (ListView) v.findViewById(R.id.list_view_student);
 
-        StudentActivityFragment.MyAdapter custumAdapter = new StudentActivityFragment.MyAdapter(this.getContext(),title, title);
+        studentsArrayList = new ArrayList<>();
+        custumAdapter = new StudentActivityFragment.MyAdapter(this.getContext(),studentsArrayList);
         listOfSchool.setAdapter(custumAdapter);
+//        dialogue
+        Button btn = (Button) v.findViewById(R.id.adding_school);
+        TextView  result = (TextView) v.findViewById(R.id.result_dialgue);
+        btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                // get prompts.xml view
+                View promptsView = inflater.inflate(R.layout.dialogue, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text_dialogue);
+                final EditText codeSchool = (EditText) promptsView.findViewById(R.id.input_text_dialogue_code);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        String nameSchool = userInput.getText().toString();
+                                        String code  = codeSchool.getText().toString();
+                                        if (!nameSchool.equals("") && !code.equals("")){
+                                            databaseHelper.addStudents(
+                                                    new Students(code,nameSchool, true)
+                                            );
+
+                                            // get data
+                                            try {
+                                                Students sc = databaseHelper.getWhereStudents().where().eq("code", code)
+                                                        .and().eq("name", nameSchool).queryForFirst();
+                                                Bundle b = new Bundle();
+                                                b.putLong("id",sc.getIdStudents());
+                                                b.putInt("position",sc.getIdStudents());
+                                                Navigation.findNavController(v).navigate(R.id.action_studentActivityFragment_to_studentTabActivityFragment,b);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+
+            }
+        });
+
         listOfSchool.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("ITEM CLICK", position +" position");
                 Bundle dataItem = new Bundle();
                 dataItem.putLong("id",id);
                 dataItem.putInt("position", position);
                 Navigation.findNavController(v).navigate(R.id.action_studentActivityFragment_to_studentTabActivityFragment, dataItem);
             }
         });
-        text.setText("position :"+ mParam1+" id : "+ mParam2);
         return v;
     }
-    private class MyAdapter extends ArrayAdapter<String> {
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDataFromDB();
+    }
+    public void getDataFromDB() {
+        if (studentsArrayList != null) studentsArrayList.clear();
+        try {
+            ArrayList<Students> _schoolsList = (ArrayList<Students>) databaseHelper.getWhereStudents().where()
+                    .eq("active", true).query();
+            custumAdapter.addAll(_schoolsList);
+        }catch (Exception e){
+            Log.e("DATABASE", "error", e);
+        }
+
+//        custumAdapter.addAll(l);
+        if (studentsArrayList.size() == 0) {
+            listOfSchool.setVisibility(View.GONE);
+        } else {
+            custumAdapter.notifyDataSetChanged();
+        }
+    }
+    private class MyAdapter extends ArrayAdapter<Students> {
         Context context ;
-        String title[];
-        String subTitle[];
-        MyAdapter(Context c, String title[], String subTitle[]){
-            super(c, R.layout.fragment_items_view, R.id.title_text, title);
+        ArrayList<Students> students ;
+        MyAdapter(Context c, ArrayList<Students> students){
+            super(c, R.layout.fragment_items_view, R.id.title_text, students);
             this.context = c;
-            this.title = title;
-            this.subTitle = subTitle;
+            this.students = students;
+        }
+
+        @Override
+        public int getPosition(@Nullable Students item) {
+            return item.getIdStudents();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).getIdStudents();
         }
 
         @NonNull
@@ -117,8 +223,8 @@ public class StudentActivityFragment extends Fragment {
             View v = inflater.inflate(R.layout.fragment_home_list_view, parent, false);
             TextView _title = v.findViewById(R.id.my_title);
             TextView _subTitle = v.findViewById(R.id.my_sub_title);
-            _title.setText(title[position]);
-            _subTitle.setText(subTitle[position]);
+            _title.setText(students.get(position).getName());
+            _subTitle.setText(students.get(position).getCode());
             return v;
 
         }

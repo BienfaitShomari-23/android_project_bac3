@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseManager extends OrmLiteSqliteOpenHelper {
@@ -78,14 +79,15 @@ public class DataBaseManager extends OrmLiteSqliteOpenHelper {
             return null;
         }
     }
-    public List<Schools> getAllSchool(Schools schools){
+    public ArrayList<Schools> getAllSchool(){
+        ArrayList<Schools> schoolsArrayList = null;
         try{
             Dao<Schools, Integer> usersQuery = getDao(Schools.class);
-            return usersQuery.queryForAll();
+            schoolsArrayList = (ArrayList<Schools>) usersQuery.queryForAll();
         }catch (Exception e){
-            Log.e("DataBase", "Can't inser Schools", e);
-            return null;
+            e.printStackTrace();
         }
+        return schoolsArrayList;
     }
     public List<Students> getAllStudent(Students students){
         try{
